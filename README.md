@@ -81,6 +81,10 @@ let mut bucket = SnowflakeIdBucket::new(1, 1).unwrap();
 let id = bucket.get_id();
 ```
 
+## Caveats
+
+- **Do not mix `lazy_generate` with clock-based methods** (`generate` / `real_time_generate`) on the same generator instance. `lazy_generate` advances the internal timestamp synthetically, so a later clock-based call may reuse a timestamp that `lazy_generate` already claimed, producing duplicate IDs. `SnowflakeIdBucket` uses `lazy_generate` internally on a dedicated generator and is safe to use alongside separate clock-based generators.
+
 ## License
 
 MIT

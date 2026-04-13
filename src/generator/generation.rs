@@ -54,6 +54,20 @@ impl SnowflakeIdGenerator {
     }
 
     /// Generates the next ID without reading the system clock.
+    ///
+    /// Instead of a syscall, `lazy_generate` synthetically increments
+    /// `last_time_millis` whenever the sequence counter wraps.  This makes it
+    /// the fastest generation mode but comes with an important constraint:
+    ///
+    /// **Do not mix `lazy_generate` with [`generate`](Self::generate) or
+    /// [`real_time_generate`](Self::real_time_generate) on the same generator
+    /// instance.**  Because `lazy_generate` can advance `last_time_millis`
+    /// ahead of the real clock, a subsequent clock-based call may produce a
+    /// timestamp that `lazy_generate` already used, resulting in **duplicate
+    /// IDs**.
+    ///
+    /// `SnowflakeIdBucket` uses `lazy_generate` internally on a dedicated
+    /// generator that is never exposed for clock-based calls, so it is safe.
     pub fn lazy_generate(&mut self) -> i64 {
         self.idx = (self.idx + 1) & self.layout.max_sequence();
 
