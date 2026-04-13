@@ -14,6 +14,7 @@ impl SnowflakeIdGenerator {
     /// assert!(id > 0);
     /// ```
     pub fn generate(&mut self) -> Result<i64, SnowflakeError> {
+        let id = self.assemble(self.last_time_millis);
         self.idx = (self.idx + 1) & self.layout.max_sequence();
 
         if self.idx == 0 {
@@ -27,30 +28,31 @@ impl SnowflakeIdGenerator {
             self.last_time_millis = now;
         }
 
-        Ok(self.assemble(self.last_time_millis))
+        Ok(id)
     }
 
     /// Generates the next ID, **always** reading the current clock.
     pub fn real_time_generate(&mut self) -> Result<i64, SnowflakeError> {
-        self.idx = (self.idx + 1) & self.layout.max_sequence();
-
         let mut now = get_time_millis(self.epoch)?;
 
         if now < self.last_time_millis {
             return Err(SnowflakeError::ClockMovedBackwards);
         }
 
-        if now == self.last_time_millis {
-            if self.idx == 0 {
-                now = biding_time_conditions(self.last_time_millis, self.epoch)?;
-                self.last_time_millis = now;
-            }
-        } else {
+        if now != self.last_time_millis {
             self.last_time_millis = now;
             self.idx = 0;
         }
 
-        Ok(self.assemble(self.last_time_millis))
+        let id = self.assemble(self.last_time_millis);
+        self.idx = (self.idx + 1) & self.layout.max_sequence();
+
+        if self.idx == 0 {
+            now = biding_time_conditions(self.last_time_millis, self.epoch)?;
+            self.last_time_millis = now;
+        }
+
+        Ok(id)
     }
 
     /// Generates the next ID without reading the system clock.
@@ -69,13 +71,14 @@ impl SnowflakeIdGenerator {
     /// `SnowflakeIdBucket` uses `lazy_generate` internally on a dedicated
     /// generator that is never exposed for clock-based calls, so it is safe.
     pub fn lazy_generate(&mut self) -> i64 {
+        let id = self.assemble(self.last_time_millis);
         self.idx = (self.idx + 1) & self.layout.max_sequence();
 
         if self.idx == 0 {
             self.last_time_millis += 1;
         }
 
-        self.assemble(self.last_time_millis)
+        id
     }
 
     #[inline]
