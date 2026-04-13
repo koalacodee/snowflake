@@ -20,30 +20,39 @@ thread_local! {
     static LOCAL_GEN: RefCell<Option<SnowflakeIdGenerator>> = const { RefCell::new(None) };
 }
 
+/// Initializes the global ID generation system with the UNIX epoch.
 ///
-/// This must be called exactly once (usually in `main.rs`) before any calls to [`next_id`].
+/// Must be called **exactly once** (usually in `main`) before any calls to
+/// [`next_id`].  Calling it a second time returns
+/// [`SnowflakeError::AlreadyInitialized`].  To change the configuration,
+/// restart the process so that all thread-local generators are dropped and
+/// recreated with the new settings.
 ///
 /// # Errors
 ///
-/// Returns an error if the layout is invalid.
+/// - [`SnowflakeError::AlreadyInitialized`] if called more than once.
 pub fn init(machine_id: i32, layout: BitLayout) -> Result<(), SnowflakeError> {
     init_with_epoch(machine_id, layout, UNIX_EPOCH)
 }
 
 /// Initializes the global ID generation system with a custom epoch.
 ///
-/// This must be called exactly once (usually in `main.rs`) before any calls to [`next_id`].
+/// Must be called **exactly once** (usually in `main`) before any calls to
+/// [`next_id`].  Calling it a second time returns
+/// [`SnowflakeError::AlreadyInitialized`].  To change the configuration,
+/// restart the process so that all thread-local generators are dropped and
+/// recreated with the new settings.
 ///
 /// # Errors
 ///
-/// Returns an error if the layout is invalid.
+/// - [`SnowflakeError::AlreadyInitialized`] if called more than once.
 pub fn init_with_epoch(
     machine_id: i32,
     layout: BitLayout,
     epoch: SystemTime,
 ) -> Result<(), SnowflakeError> {
     if INITIALIZED.swap(true, Ordering::SeqCst) {
-        return Ok(()); // Already initialized
+        return Err(SnowflakeError::AlreadyInitialized);
     }
 
     MACHINE_ID.store(machine_id, Ordering::SeqCst);

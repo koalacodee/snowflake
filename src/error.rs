@@ -27,6 +27,16 @@ pub enum SnowflakeError {
     #[error("node_id {given} exceeds maximum {max} for the configured bit width")]
     NodeIdOutOfRange { given: i32, max: i32 },
 
+    /// The global generator has already been initialized.
+    ///
+    /// [`init`](crate::init) / [`init_with_epoch`](crate::init_with_epoch) can
+    /// only be called once per process.  Re-initialization is rejected because
+    /// existing thread-local generators would keep using the old configuration,
+    /// leading to inconsistent ID layouts.  To change the configuration, restart
+    /// the process so that all thread-local state is cleared.
+    #[error("global snowflake generator is already initialized; restart the process to reconfigure")]
+    AlreadyInitialized,
+
     /// The system clock moved backwards, which would break ID monotonicity.
     #[error("system clock moved backwards; cannot guarantee monotonic IDs")]
     ClockMovedBackwards,
