@@ -99,8 +99,8 @@ impl BitLayout {
     /// assert_eq!(BitLayout::default().max_sequence(), 4095);
     /// ```
     #[inline]
-    pub const fn max_sequence(&self) -> u16 {
-        (1u16 << self.sequence_bits) - 1
+    pub const fn max_sequence(&self) -> u32 {
+        (1u32 << self.sequence_bits) - 1
     }
 
     /// Maximum allowed `machine_id`.

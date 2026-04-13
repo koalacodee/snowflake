@@ -10,5 +10,5 @@ pub struct SnowflakeComponents {
     /// Node identifier embedded in the ID.
     pub node_id: i32,
     /// Per-millisecond sequence counter embedded in the ID.
-    pub sequence: u16,
+    pub sequence: u32,
 }

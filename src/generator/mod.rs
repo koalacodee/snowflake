@@ -39,7 +39,7 @@ pub struct SnowflakeIdGenerator {
     /// The node (worker) identifier baked into every ID.
     pub node_id: i32,
     /// Per-millisecond auto-increment counter.
-    pub(crate) idx: u16,
+    pub(crate) idx: u32,
     /// Bit layout governing field widths and shifts.
     pub(crate) layout: BitLayout,
 }
