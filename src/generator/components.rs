@@ -1,6 +1,7 @@
 /// The decoded components of a Snowflake ID.
 ///
 /// Obtained via [`crate::generator::SnowflakeIdGenerator::decompose`].
+#[must_use]
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub struct SnowflakeComponents {
     /// Milliseconds since the generator's epoch.

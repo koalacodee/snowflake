@@ -23,6 +23,7 @@ use crate::error::SnowflakeError;
 /// assert_eq!(layout.max_machine_id(), 31);
 /// assert_eq!(layout.max_node_id(), 31);
 /// ```
+#[must_use]
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub struct BitLayout {
     /// Number of bits allocated to the millisecond timestamp.
