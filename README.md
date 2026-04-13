@@ -83,6 +83,7 @@ let id = bucket.get_id();
 
 ## Caveats
 
+- **Thread count is limited by `node_id_bits`.** Each thread that calls `next_id()` is assigned a unique node ID. With the default 5 `node_id_bits`, at most 32 threads can generate IDs. Exceeding this returns `SnowflakeError::NodeIdExhausted`. If your application needs more threads, increase `node_id_bits` (and reduce `machine_id_bits` or `timestamp_bits` to compensate) when constructing your `BitLayout`.
 - **`init()` can only be called once per process.** A second call returns `SnowflakeError::AlreadyInitialized`. Thread-local generators created by earlier threads retain the original configuration and cannot be updated in-place. To change the configuration, restart the process so all thread-local state is cleared and recreated.
 - **Do not mix `lazy_generate` with clock-based methods** (`generate` / `real_time_generate`) on the same generator instance. `lazy_generate` advances the internal timestamp synthetically, so a later clock-based call may reuse a timestamp that `lazy_generate` already claimed, producing duplicate IDs. `SnowflakeIdBucket` uses `lazy_generate` internally on a dedicated generator and is safe to use alongside separate clock-based generators.
 

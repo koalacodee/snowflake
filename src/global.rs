@@ -72,6 +72,13 @@ pub fn is_initialized() -> bool {
 /// This is the highest performance way to generate IDs as it involves **zero locking**
 /// and **zero contention** between threads.
 ///
+/// Each thread that calls `next_id` is assigned a unique `node_id` automatically.
+/// The maximum number of threads is determined by `node_id_bits` in the
+/// [`BitLayout`] (e.g. 32 threads with the default 5 bits).  If more threads
+/// call `next_id` than the layout supports, this returns
+/// [`SnowflakeError::NodeIdExhausted`].  Increase `node_id_bits` (at the
+/// expense of `machine_id_bits` or `timestamp_bits`) if you need more threads.
+///
 /// # Panics
 ///
 /// Panics if [`init`] has not been called.
@@ -80,12 +87,17 @@ pub fn next_id() -> Result<i64, SnowflakeError> {
 
     LOCAL_GEN.with(|cell| {
         let mut opt = cell.borrow_mut();
-        let generator = opt.get_or_insert_with(create_generator);
-        generator.generate()
+        if opt.is_none() {
+            *opt = Some(create_generator()?);
+        }
+        opt.as_mut().unwrap().generate()
     })
 }
 
 /// Generates a new unique ID using a thread-local generator, always reading the system clock.
+///
+/// See [`next_id`] for details on the per-thread `node_id` assignment and
+/// thread count limits.
 ///
 /// # Panics
 ///
@@ -95,19 +107,27 @@ pub fn real_time_next_id() -> Result<i64, SnowflakeError> {
 
     LOCAL_GEN.with(|cell| {
         let mut opt = cell.borrow_mut();
-        let generator = opt.get_or_insert_with(create_generator);
-        generator.real_time_generate()
+        if opt.is_none() {
+            *opt = Some(create_generator()?);
+        }
+        opt.as_mut().unwrap().real_time_generate()
     })
 }
 
-fn create_generator() -> SnowflakeIdGenerator {
+fn create_generator() -> Result<SnowflakeIdGenerator, SnowflakeError> {
     let m_id = MACHINE_ID.load(Ordering::Relaxed);
-    let n_id = NODE_COUNTER.fetch_add(1, Ordering::Relaxed);
     let layout = *LAYOUT.get().unwrap_or(&BitLayout::default());
+    let n_id = NODE_COUNTER.fetch_add(1, Ordering::Relaxed);
+
+    if n_id > layout.max_node_id() {
+        return Err(SnowflakeError::NodeIdExhausted {
+            max: layout.max_node_id(),
+        });
+    }
+
     let epoch = *EPOCH.get().unwrap_or(&UNIX_EPOCH);
 
     SnowflakeIdGenerator::with_layout_and_epoch(m_id, n_id, layout, epoch)
-        .expect("global settings must be valid")
 }
 
 #[inline]

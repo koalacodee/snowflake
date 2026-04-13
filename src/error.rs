@@ -37,6 +37,19 @@ pub enum SnowflakeError {
     #[error("global snowflake generator is already initialized; restart the process to reconfigure")]
     AlreadyInitialized,
 
+    /// More threads have called [`next_id`](crate::next_id) than the layout's
+    /// `node_id_bits` can accommodate.
+    ///
+    /// With the default 5 `node_id_bits`, at most 32 threads (node IDs 0..=31)
+    /// can generate IDs.  If your application needs more threads, increase
+    /// `node_id_bits` (and reduce `machine_id_bits` or `timestamp_bits` to
+    /// compensate) when calling [`init`](crate::init).
+    #[error(
+        "thread count exceeded the maximum node_id ({max}); \
+         increase node_id_bits in your BitLayout to support more threads"
+    )]
+    NodeIdExhausted { max: i32 },
+
     /// The system clock moved backwards, which would break ID monotonicity.
     #[error("system clock moved backwards; cannot guarantee monotonic IDs")]
     ClockMovedBackwards,
