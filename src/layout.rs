@@ -15,7 +15,7 @@ use crate::error::SnowflakeError;
 /// # Example
 ///
 /// ```rust
-/// use snowflake::BitLayout;
+/// use snowflake_gen::BitLayout;
 ///
 /// // Classic Twitter layout
 /// let layout = BitLayout::default();
@@ -49,7 +49,7 @@ impl BitLayout {
     /// # Example
     ///
     /// ```rust
-    /// use snowflake::BitLayout;
+    /// use snowflake_gen::BitLayout;
     ///
     /// let layout = BitLayout::new(41, 5, 5, 12).unwrap(); // classic Twitter
     /// let bad    = BitLayout::new(40, 5, 5, 12);          // sums to 62 → error
@@ -95,7 +95,7 @@ impl BitLayout {
     /// Maximum allowed sequence value (IDs per millisecond − 1).
     ///
     /// ```rust
-    /// use snowflake::BitLayout;
+    /// use snowflake_gen::BitLayout;
     /// assert_eq!(BitLayout::default().max_sequence(), 4095);
     /// ```
     #[inline]
@@ -106,7 +106,7 @@ impl BitLayout {
     /// Maximum allowed `machine_id`.
     ///
     /// ```rust
-    /// use snowflake::BitLayout;
+    /// use snowflake_gen::BitLayout;
     /// assert_eq!(BitLayout::default().max_machine_id(), 31);
     /// ```
     #[inline]
@@ -117,7 +117,7 @@ impl BitLayout {
     /// Maximum allowed `node_id`.
     ///
     /// ```rust
-    /// use snowflake::BitLayout;
+    /// use snowflake_gen::BitLayout;
     /// assert_eq!(BitLayout::default().max_node_id(), 31);
     /// ```
     #[inline]

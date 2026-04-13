@@ -5,7 +5,7 @@ impl SnowflakeIdGenerator {
     /// Decodes a previously generated ID back into its constituent fields.
     ///
     /// ```rust
-    /// use snowflake::SnowflakeIdGenerator;
+    /// use snowflake_gen::SnowflakeIdGenerator;
     ///
     /// let mut idgen = SnowflakeIdGenerator::new(3, 7).unwrap();
     /// let id = idgen.generate().unwrap();

@@ -1,4 +1,4 @@
-//! # Snowflake
+//! # snowflake-gen
 //!
 //! A configurable Snowflake ID generator for Rust.
 //!
@@ -23,7 +23,7 @@
 //! ## Quick start
 //!
 //! ```rust
-//! use snowflake::SnowflakeIdGenerator;
+//! use snowflake_gen::SnowflakeIdGenerator;
 //!
 //! let mut idgen = SnowflakeIdGenerator::new(1, 1).unwrap();
 //! let id = idgen.generate().unwrap();
@@ -33,7 +33,7 @@
 //! ## Custom layout
 //!
 //! ```rust
-//! use snowflake::{BitLayout, SnowflakeIdGenerator};
+//! use snowflake_gen::{BitLayout, SnowflakeIdGenerator};
 //!
 //! // 10 sequence bits → 1 023 IDs/ms, 8 machine + 7 node bits
 //! let layout = BitLayout::new(38, 8, 7, 10).unwrap();

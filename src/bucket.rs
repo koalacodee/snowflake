@@ -8,7 +8,7 @@ use crate::generator::SnowflakeIdGenerator;
 /// # Example
 ///
 /// ```rust
-/// use snowflake::SnowflakeIdBucket;
+/// use snowflake_gen::SnowflakeIdBucket;
 ///
 /// let mut bucket = SnowflakeIdBucket::new(1, 1).unwrap();
 /// let id = bucket.get_id();

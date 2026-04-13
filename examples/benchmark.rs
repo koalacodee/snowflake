@@ -1,4 +1,4 @@
-use snowflake::{BitLayout, init, next_id};
+use snowflake_gen::{BitLayout, init, next_id};
 use std::sync::Arc;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::thread;

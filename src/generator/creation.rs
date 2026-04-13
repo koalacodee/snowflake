@@ -8,7 +8,7 @@ impl SnowflakeIdGenerator {
     /// Constructs a generator using the UNIX epoch and the default [`BitLayout`].
     ///
     /// ```rust
-    /// use snowflake::SnowflakeIdGenerator;
+    /// use snowflake_gen::SnowflakeIdGenerator;
     ///
     /// let mut idgen = SnowflakeIdGenerator::new(1, 1).unwrap();
     /// ```
@@ -20,7 +20,7 @@ impl SnowflakeIdGenerator {
     ///
     /// ```rust
     /// use std::time::{Duration, UNIX_EPOCH};
-    /// use snowflake::SnowflakeIdGenerator;
+    /// use snowflake_gen::SnowflakeIdGenerator;
     ///
     /// // Discord epoch: 1 January 2015 00:00:00 UTC
     /// let discord_epoch = UNIX_EPOCH + Duration::from_millis(1_420_070_400_000);
@@ -37,7 +37,7 @@ impl SnowflakeIdGenerator {
     /// Constructs a generator with a fully custom [`BitLayout`] and UNIX epoch.
     ///
     /// ```rust
-    /// use snowflake::{BitLayout, SnowflakeIdGenerator};
+    /// use snowflake_gen::{BitLayout, SnowflakeIdGenerator};
     ///
     /// let layout = BitLayout::new(38, 8, 7, 10).unwrap();
     /// let mut idgen = SnowflakeIdGenerator::with_layout(1, 1, layout).unwrap();

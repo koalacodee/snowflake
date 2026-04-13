@@ -22,7 +22,7 @@ pub use components::SnowflakeComponents;
 /// # Example — default layout
 ///
 /// ```rust
-/// use snowflake::SnowflakeIdGenerator;
+/// use snowflake_gen::SnowflakeIdGenerator;
 ///
 /// let mut idgen = SnowflakeIdGenerator::new(1, 1).unwrap();
 /// let id = idgen.generate().unwrap();
