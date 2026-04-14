@@ -17,15 +17,15 @@ A configurable [Snowflake ID](https://en.wikipedia.org/wiki/Snowflake_ID) genera
 | Timestamp | 41 | ~69 years |
 | Machine ID | 5 | 31 |
 | Node ID | 5 | 31 |
-| Sequence | 12 | 4,095/ms |
+| Sequence | 12 | 4,096/ms |
 
 ## Quick start
 
 ```rust
 use snowflake_gen::SnowflakeIdGenerator;
 
-let mut gen = SnowflakeIdGenerator::new(1, 1).unwrap();
-let id = gen.generate().unwrap();
+let mut idgen= SnowflakeIdGenerator::new(1, 1).unwrap();
+let id = idgen.generate().unwrap();
 println!("{id}");
 ```
 
@@ -36,8 +36,8 @@ use snowflake_gen::{BitLayout, SnowflakeIdGenerator};
 
 // 10 sequence bits (1,023 IDs/ms), 8 machine + 7 node bits
 let layout = BitLayout::new(38, 8, 7, 10).unwrap();
-let mut gen = SnowflakeIdGenerator::with_layout(1, 1, layout).unwrap();
-let id = gen.generate().unwrap();
+let mut idgen= SnowflakeIdGenerator::with_layout(1, 1, layout).unwrap();
+let id = idgen.generate().unwrap();
 ```
 
 ## Thread-local global API
@@ -62,9 +62,9 @@ Each thread gets its own generator with a unique `node_id` assigned automaticall
 ```rust
 use snowflake_gen::SnowflakeIdGenerator;
 
-let mut gen = SnowflakeIdGenerator::new(3, 7).unwrap();
-let id = gen.generate().unwrap();
-let parts = gen.decompose(id);
+let mut idgen= SnowflakeIdGenerator::new(3, 7).unwrap();
+let id = idgen.generate().unwrap();
+let parts = idgen.decompose(id);
 
 assert_eq!(parts.machine_id, 3);
 assert_eq!(parts.node_id, 7);

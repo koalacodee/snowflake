@@ -18,7 +18,7 @@
 //! | Timestamp   | 41   | ~69 years           |
 //! | Machine ID  | 5    | 31                 |
 //! | Node ID     | 5    | 31                 |
-//! | Sequence    | 12   | 4 095 / ms         |
+//! | Sequence    | 12   | 4 096 / ms         |
 //!
 //! ## Quick start
 //!
