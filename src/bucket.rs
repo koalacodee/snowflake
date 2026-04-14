@@ -74,6 +74,7 @@ impl SnowflakeIdBucket {
         for _ in 0..=max_seq {
             self.buffer.push(self.generator.lazy_generate());
         }
+        self.buffer.reverse();
     }
 }
 
