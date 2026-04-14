@@ -22,14 +22,14 @@ pub struct SnowflakeIdBucket {
 
 impl SnowflakeIdBucket {
     /// Constructs a bucket using the UNIX epoch and default [`BitLayout`].
-    pub fn new(machine_id: i32, node_id: i32) -> Result<Self, SnowflakeError> {
+    pub fn new(machine_id: i64, node_id: i64) -> Result<Self, SnowflakeError> {
         Self::with_epoch(machine_id, node_id, UNIX_EPOCH)
     }
 
     /// Constructs a bucket using a custom epoch and default [`BitLayout`].
     pub fn with_epoch(
-        machine_id: i32,
-        node_id: i32,
+        machine_id: i64,
+        node_id: i64,
         epoch: SystemTime,
     ) -> Result<Self, SnowflakeError> {
         let generator = SnowflakeIdGenerator::with_epoch(machine_id, node_id, epoch)?;
@@ -41,8 +41,8 @@ impl SnowflakeIdBucket {
 
     /// Constructs a bucket with a fully custom [`BitLayout`] and epoch.
     pub fn with_layout_and_epoch(
-        machine_id: i32,
-        node_id: i32,
+        machine_id: i64,
+        node_id: i64,
         layout: BitLayout,
         epoch: SystemTime,
     ) -> Result<Self, SnowflakeError> {

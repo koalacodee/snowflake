@@ -7,9 +7,9 @@ pub struct SnowflakeComponents {
     /// Milliseconds since the generator's epoch.
     pub timestamp_millis: i64,
     /// Machine identifier embedded in the ID.
-    pub machine_id: i32,
+    pub machine_id: i64,
     /// Node identifier embedded in the ID.
-    pub node_id: i32,
+    pub node_id: i64,
     /// Per-millisecond sequence counter embedded in the ID.
     pub sequence: u32,
 }

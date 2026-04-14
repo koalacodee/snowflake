@@ -21,11 +21,11 @@ pub enum SnowflakeError {
 
     /// A `machine_id` was provided that exceeds the layout's maximum.
     #[error("machine_id {given} exceeds maximum {max} for the configured bit width")]
-    MachineIdOutOfRange { given: i32, max: i32 },
+    MachineIdOutOfRange { given: i64, max: i64 },
 
     /// A `node_id` was provided that exceeds the layout's maximum.
     #[error("node_id {given} exceeds maximum {max} for the configured bit width")]
-    NodeIdOutOfRange { given: i32, max: i32 },
+    NodeIdOutOfRange { given: i64, max: i64 },
 
     /// The global generator has already been initialized.
     ///
@@ -48,7 +48,7 @@ pub enum SnowflakeError {
         "thread count exceeded the maximum node_id ({max}); \
          increase node_id_bits in your BitLayout to support more threads"
     )]
-    NodeIdExhausted { max: i32 },
+    NodeIdExhausted { max: i64 },
 
     /// The system clock moved backwards, which would break ID monotonicity.
     #[error("system clock moved backwards; cannot guarantee monotonic IDs")]

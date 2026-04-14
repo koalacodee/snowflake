@@ -35,9 +35,9 @@ pub struct SnowflakeIdGenerator {
     /// Timestamp of the last generated ID (millis since epoch).
     pub(crate) last_time_millis: i64,
     /// The machine identifier baked into every ID.
-    pub(crate) machine_id: i32,
+    pub(crate) machine_id: i64,
     /// The node (worker) identifier baked into every ID.
-    pub(crate) node_id: i32,
+    pub(crate) node_id: i64,
     /// Per-millisecond auto-increment counter.
     pub(crate) idx: u32,
     /// Bit layout governing field widths and shifts.
@@ -59,13 +59,13 @@ impl SnowflakeIdGenerator {
 
     /// Returns the machine identifier.
     #[inline]
-    pub fn machine_id(&self) -> i32 {
+    pub fn machine_id(&self) -> i64 {
         self.machine_id
     }
 
     /// Returns the node (worker) identifier.
     #[inline]
-    pub fn node_id(&self) -> i32 {
+    pub fn node_id(&self) -> i64 {
         self.node_id
     }
 }

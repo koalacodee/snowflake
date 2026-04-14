@@ -111,8 +111,8 @@ impl BitLayout {
     /// assert_eq!(BitLayout::default().max_machine_id(), 31);
     /// ```
     #[inline]
-    pub const fn max_machine_id(&self) -> i32 {
-        (1i32 << self.machine_id_bits) - 1
+    pub const fn max_machine_id(&self) -> i64 {
+        (1i64 << self.machine_id_bits) - 1
     }
 
     /// Maximum allowed `node_id`.
@@ -122,8 +122,8 @@ impl BitLayout {
     /// assert_eq!(BitLayout::default().max_node_id(), 31);
     /// ```
     #[inline]
-    pub const fn max_node_id(&self) -> i32 {
-        (1i32 << self.node_id_bits) - 1
+    pub const fn max_node_id(&self) -> i64 {
+        (1i64 << self.node_id_bits) - 1
     }
 
     /// Maximum milliseconds the timestamp field can represent.

@@ -12,7 +12,7 @@ impl SnowflakeIdGenerator {
     ///
     /// let mut idgen = SnowflakeIdGenerator::new(1, 1).unwrap();
     /// ```
-    pub fn new(machine_id: i32, node_id: i32) -> Result<Self, SnowflakeError> {
+    pub fn new(machine_id: i64, node_id: i64) -> Result<Self, SnowflakeError> {
         Self::with_epoch(machine_id, node_id, UNIX_EPOCH)
     }
 
@@ -27,8 +27,8 @@ impl SnowflakeIdGenerator {
     /// let mut idgen = SnowflakeIdGenerator::with_epoch(1, 1, discord_epoch).unwrap();
     /// ```
     pub fn with_epoch(
-        machine_id: i32,
-        node_id: i32,
+        machine_id: i64,
+        node_id: i64,
         epoch: SystemTime,
     ) -> Result<Self, SnowflakeError> {
         Self::with_layout_and_epoch(machine_id, node_id, BitLayout::default(), epoch)
@@ -43,8 +43,8 @@ impl SnowflakeIdGenerator {
     /// let mut idgen = SnowflakeIdGenerator::with_layout(1, 1, layout).unwrap();
     /// ```
     pub fn with_layout(
-        machine_id: i32,
-        node_id: i32,
+        machine_id: i64,
+        node_id: i64,
         layout: BitLayout,
     ) -> Result<Self, SnowflakeError> {
         Self::with_layout_and_epoch(machine_id, node_id, layout, UNIX_EPOCH)
@@ -58,8 +58,8 @@ impl SnowflakeIdGenerator {
     /// - [`SnowflakeError::NodeIdOutOfRange`] if `node_id > layout.max_node_id()`.
     /// - [`SnowflakeError::ClockBeforeEpoch`] if the current time is before `epoch`.
     pub fn with_layout_and_epoch(
-        machine_id: i32,
-        node_id: i32,
+        machine_id: i64,
+        node_id: i64,
         layout: BitLayout,
         epoch: SystemTime,
     ) -> Result<Self, SnowflakeError> {

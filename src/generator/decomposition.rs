@@ -22,8 +22,8 @@ impl SnowflakeIdGenerator {
         let machine_mask = layout.max_machine_id() as i64;
 
         let sequence = (id & sequence_mask) as u32;
-        let node_id = ((id >> layout.node_id_shift) & node_mask) as i32;
-        let machine_id = ((id >> layout.machine_id_shift) & machine_mask) as i32;
+        let node_id = ((id >> layout.node_id_shift) & node_mask) as i64;
+        let machine_id = ((id >> layout.machine_id_shift) & machine_mask) as i64;
         let timestamp_millis = id >> layout.timestamp_shift;
 
         SnowflakeComponents {

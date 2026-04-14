@@ -1,6 +1,6 @@
 use std::cell::RefCell;
 use std::sync::OnceLock;
-use std::sync::atomic::{AtomicBool, AtomicI32, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicI64, Ordering};
 
 use crate::error::SnowflakeError;
 use crate::generator::SnowflakeIdGenerator;
@@ -9,8 +9,8 @@ use crate::layout::BitLayout;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 static INITIALIZED: AtomicBool = AtomicBool::new(false);
-static MACHINE_ID: AtomicI32 = AtomicI32::new(0);
-static NODE_COUNTER: AtomicI32 = AtomicI32::new(0);
+static MACHINE_ID: AtomicI64 = AtomicI64::new(0);
+static NODE_COUNTER: AtomicI64 = AtomicI64::new(0);
 static LAYOUT: OnceLock<BitLayout> = OnceLock::new();
 static EPOCH: OnceLock<SystemTime> = OnceLock::new();
 
@@ -31,7 +31,7 @@ thread_local! {
 /// # Errors
 ///
 /// - [`SnowflakeError::AlreadyInitialized`] if called more than once.
-pub fn init(machine_id: i32, layout: BitLayout) -> Result<(), SnowflakeError> {
+pub fn init(machine_id: i64, layout: BitLayout) -> Result<(), SnowflakeError> {
     init_with_epoch(machine_id, layout, UNIX_EPOCH)
 }
 
@@ -47,7 +47,7 @@ pub fn init(machine_id: i32, layout: BitLayout) -> Result<(), SnowflakeError> {
 ///
 /// - [`SnowflakeError::AlreadyInitialized`] if called more than once.
 pub fn init_with_epoch(
-    machine_id: i32,
+    machine_id: i64,
     layout: BitLayout,
     epoch: SystemTime,
 ) -> Result<(), SnowflakeError> {

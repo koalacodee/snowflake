@@ -86,8 +86,8 @@ impl SnowflakeIdGenerator {
     pub(crate) fn assemble(&self, timestamp_millis: i64) -> i64 {
         let layout = &self.layout;
         (timestamp_millis << layout.timestamp_shift)
-            | ((self.machine_id as i64) << layout.machine_id_shift)
-            | ((self.node_id as i64) << layout.node_id_shift)
+            | (self.machine_id << layout.machine_id_shift)
+            | (self.node_id << layout.node_id_shift)
             | (self.idx as i64)
     }
 }
