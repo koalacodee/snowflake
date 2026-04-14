@@ -15,10 +15,7 @@ impl SnowflakeIdGenerator {
     /// ```
     #[must_use = "generated ID is discarded; this advances the sequence counter for nothing"]
     pub fn generate(&mut self) -> Result<i64, SnowflakeError> {
-        let id = self.assemble(self.last_time_millis);
-        self.idx = (self.idx + 1) & self.layout.max_sequence();
-
-        if self.idx == 0 {
+        if self.idx > self.layout.max_sequence() {
             let mut now = get_time_millis(self.epoch)?;
             if now < self.last_time_millis {
                 return Err(SnowflakeError::ClockMovedBackwards);
@@ -27,15 +24,18 @@ impl SnowflakeIdGenerator {
                 now = biding_time_conditions(self.last_time_millis, self.epoch)?;
             }
             self.last_time_millis = now;
+            self.idx = 0;
         }
 
+        let id = self.assemble(self.last_time_millis);
+        self.idx += 1;
         Ok(id)
     }
 
     /// Generates the next ID, **always** reading the current clock.
     #[must_use = "generated ID is discarded; this advances the sequence counter for nothing"]
     pub fn real_time_generate(&mut self) -> Result<i64, SnowflakeError> {
-        let mut now = get_time_millis(self.epoch)?;
+        let now = get_time_millis(self.epoch)?;
 
         if now < self.last_time_millis {
             return Err(SnowflakeError::ClockMovedBackwards);
@@ -44,16 +44,14 @@ impl SnowflakeIdGenerator {
         if now != self.last_time_millis {
             self.last_time_millis = now;
             self.idx = 0;
+        } else if self.idx > self.layout.max_sequence() {
+            let advanced = biding_time_conditions(self.last_time_millis, self.epoch)?;
+            self.last_time_millis = advanced;
+            self.idx = 0;
         }
 
         let id = self.assemble(self.last_time_millis);
-        self.idx = (self.idx + 1) & self.layout.max_sequence();
-
-        if self.idx == 0 {
-            now = biding_time_conditions(self.last_time_millis, self.epoch)?;
-            self.last_time_millis = now;
-        }
-
+        self.idx += 1;
         Ok(id)
     }
 
@@ -74,13 +72,13 @@ impl SnowflakeIdGenerator {
     /// generator that is never exposed for clock-based calls, so it is safe.
     #[must_use = "generated ID is discarded; this advances the sequence counter for nothing"]
     pub fn lazy_generate(&mut self) -> i64 {
-        let id = self.assemble(self.last_time_millis);
-        self.idx = (self.idx + 1) & self.layout.max_sequence();
-
-        if self.idx == 0 {
+        if self.idx > self.layout.max_sequence() {
             self.last_time_millis += 1;
+            self.idx = 0;
         }
 
+        let id = self.assemble(self.last_time_millis);
+        self.idx += 1;
         id
     }
 
