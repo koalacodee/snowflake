@@ -81,6 +81,9 @@ impl SnowflakeIdBucket {
 mod tests {
     use super::*;
 
+    use std::time::{Duration, UNIX_EPOCH};
+    use crate::layout::BitLayout;
+
     #[test]
     fn bucket_ids_are_unique() {
         let mut bucket = SnowflakeIdBucket::new(1, 1).unwrap();
@@ -88,5 +91,36 @@ mod tests {
         ids.sort_unstable();
         ids.dedup();
         assert_eq!(ids.len(), 4096);
+    }
+
+    #[test]
+    fn bucket_multi_refill_unique() {
+        let mut bucket = SnowflakeIdBucket::new(1, 1).unwrap();
+        // 3 full refills worth of IDs (default max_sequence = 4095, so 4096 per refill)
+        let count = 4096 * 3;
+        let mut ids: Vec<i64> = (0..count).map(|_| bucket.get_id()).collect();
+        let len = ids.len();
+        ids.sort_unstable();
+        ids.dedup();
+        assert_eq!(ids.len(), len, "IDs must stay unique across refills");
+    }
+
+    #[test]
+    fn bucket_with_epoch() {
+        let epoch = UNIX_EPOCH + Duration::from_millis(1_420_070_400_000);
+        let mut bucket = SnowflakeIdBucket::with_epoch(1, 1, epoch).unwrap();
+        let id = bucket.get_id();
+        assert!(id > 0);
+    }
+
+    #[test]
+    fn bucket_with_layout_and_epoch() {
+        let layout = BitLayout::new(38, 8, 7, 10).unwrap();
+        // Use a recent epoch so the timestamp fits in 38 bits
+        let epoch = UNIX_EPOCH + Duration::from_millis(1_700_000_000_000);
+        let mut bucket =
+            SnowflakeIdBucket::with_layout_and_epoch(1, 1, layout, epoch).unwrap();
+        let id = bucket.get_id();
+        assert!(id > 0);
     }
 }

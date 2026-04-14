@@ -152,6 +152,16 @@ mod tests {
     }
 
     #[test]
+    fn test_reinit_returns_already_initialized() {
+        // Ensure init has been called at least once (may have been by another test).
+        let _ = init(1, BitLayout::default());
+
+        // Second call must fail.
+        let err = init(2, BitLayout::default()).unwrap_err();
+        assert!(matches!(err, SnowflakeError::AlreadyInitialized));
+    }
+
+    #[test]
     fn test_next_id_concurrently() {
         let _ = init(1, BitLayout::default());
 

@@ -174,4 +174,34 @@ mod tests {
     fn invalid_bit_layout_rejected() {
         assert!(BitLayout::new(40, 5, 5, 12).is_err());
     }
+
+    #[test]
+    fn max_timestamp_millis() {
+        let l = BitLayout::default();
+        // 2^41 - 1 = 2_199_023_255_551 (~69 years in ms)
+        assert_eq!(l.max_timestamp_millis(), 2_199_023_255_551);
+    }
+
+    #[test]
+    fn max_ids_per_second() {
+        let l = BitLayout::default();
+        // (4095 + 1) * (31 + 1) * (31 + 1) * 1000
+        assert_eq!(l.max_ids_per_second(), 4_096 * 32 * 32 * 1_000);
+    }
+
+    #[test]
+    fn zero_width_fields() {
+        // All bits to timestamp and sequence, zero machine/node
+        let l = BitLayout::new(51, 0, 0, 12).unwrap();
+        assert_eq!(l.max_machine_id(), 0);
+        assert_eq!(l.max_node_id(), 0);
+        assert_eq!(l.max_sequence(), 4095);
+    }
+
+    #[test]
+    fn max_sequence_bits_after_widening() {
+        // 31 sequence bits — the widened u32 return type must handle this
+        let l = BitLayout::new(16, 8, 8, 31).unwrap();
+        assert_eq!(l.max_sequence(), (1u32 << 31) - 1);
+    }
 }
