@@ -117,13 +117,17 @@ pub fn real_time_next_id() -> Result<i64, SnowflakeError> {
 fn create_generator() -> Result<SnowflakeIdGenerator, SnowflakeError> {
     let m_id = MACHINE_ID.load(Ordering::Relaxed);
     let layout = *LAYOUT.get().unwrap_or(&BitLayout::default());
-    let n_id = NODE_COUNTER.fetch_add(1, Ordering::Relaxed);
-
-    if n_id > layout.max_node_id() {
-        return Err(SnowflakeError::NodeIdExhausted {
-            max: layout.max_node_id(),
-        });
-    }
+    let max = layout.max_node_id();
+    let n_id = loop {
+        let current = NODE_COUNTER.load(Ordering::Relaxed);
+        if current > max {
+            return Err(SnowflakeError::NodeIdExhausted { max });
+        }
+        match NODE_COUNTER.compare_exchange(current, current + 1, Ordering::SeqCst, Ordering::Relaxed) {
+            Ok(val) => break val,
+            Err(_) => continue,
+        }
+    };
 
     let epoch = *EPOCH.get().unwrap_or(&UNIX_EPOCH);
 
