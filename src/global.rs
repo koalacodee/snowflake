@@ -137,7 +137,7 @@ fn create_generator() -> Result<SnowflakeIdGenerator, SnowflakeError> {
 #[inline]
 fn ensure_init() {
     if !is_initialized() {
-        panic!("Snowflake system must be initialized with `snowflake::init(...)` before use.");
+        panic!("Snowflake system must be initialized with `snowflake_gen::init(...)` before use.");
     }
 }
 

@@ -27,13 +27,13 @@ use crate::error::SnowflakeError;
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub struct BitLayout {
     /// Number of bits allocated to the millisecond timestamp.
-    pub timestamp_bits: u8,
+    pub(crate) timestamp_bits: u8,
     /// Number of bits allocated to the machine identifier.
-    pub machine_id_bits: u8,
+    pub(crate) machine_id_bits: u8,
     /// Number of bits allocated to the node (worker) identifier.
-    pub node_id_bits: u8,
+    pub(crate) node_id_bits: u8,
     /// Number of bits allocated to the per-millisecond sequence counter.
-    pub sequence_bits: u8,
+    pub(crate) sequence_bits: u8,
 
     // Precomputed shift offsets (derived from the widths above).
     pub(crate) node_id_shift: u8,
@@ -91,6 +91,30 @@ impl BitLayout {
             machine_id_shift,
             timestamp_shift,
         })
+    }
+
+    /// Returns the number of bits allocated to the timestamp.
+    #[inline]
+    pub const fn timestamp_bits(&self) -> u8 {
+        self.timestamp_bits
+    }
+
+    /// Returns the number of bits allocated to the machine identifier.
+    #[inline]
+    pub const fn machine_id_bits(&self) -> u8 {
+        self.machine_id_bits
+    }
+
+    /// Returns the number of bits allocated to the node identifier.
+    #[inline]
+    pub const fn node_id_bits(&self) -> u8 {
+        self.node_id_bits
+    }
+
+    /// Returns the number of bits allocated to the sequence counter.
+    #[inline]
+    pub const fn sequence_bits(&self) -> u8 {
+        self.sequence_bits
     }
 
     /// Maximum allowed sequence value (IDs per millisecond − 1).
