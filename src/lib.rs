@@ -47,19 +47,17 @@ pub mod error;
 pub mod generator;
 pub mod global;
 pub mod layout;
-pub mod utils;
+pub(crate) mod utils;
 
 pub use bucket::SnowflakeIdBucket;
 pub use error::SnowflakeError;
 pub use generator::{SnowflakeComponents, SnowflakeIdGenerator};
 pub use global::{init, init_with_epoch, is_initialized, next_id, real_time_next_id};
 pub use layout::BitLayout;
-pub use utils::get_time_millis;
 
 /// Convenience re-exports.
 pub mod prelude {
     pub use super::{
         BitLayout, SnowflakeComponents, SnowflakeError, SnowflakeIdBucket, SnowflakeIdGenerator,
-        get_time_millis,
     };
 }
