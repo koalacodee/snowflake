@@ -1,6 +1,6 @@
 [package]
 name = "snowflake-gen"
-version = "1.0.0"
+version = "1.0.1"
 edition = "2024"
 authors = ["koalacodee <koalacodee@gmail.com>"]
 description = "A configurable Snowflake ID generator with custom bit layouts, thread-local global generation, and ID decomposition"
