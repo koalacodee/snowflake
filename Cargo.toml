@@ -11,4 +11,3 @@ categories = ["algorithms", "data-structures"]
 readme = "README.md"
 
 [dependencies]
-thiserror = "2"
